@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Job Portal{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Recent Job Postings</h1>
+  <div class="list-group">
+    {% for job in jobs %}
+      <a href="{% url 'job_detail' job.pk %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+          <h5 class="mb-1">{{ job.title }}</h5>
+          <small>{{ job.posted_date|date:"F j, Y" }}</small>
+        </div>
+        <p class="mb-1">{{ job.company.name }}</p>
+        <small>{{ job.location }}</small>
+      </a>
+    {% empty %}
+      <p>No job postings found.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

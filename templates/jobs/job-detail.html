@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ job.title }} - Job Portal{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title">{{ job.title }}</h1>
+                    <h4 class="card-subtitle mb-2 text-muted">
+                        <a href="{% url 'company_detail' job.company.pk %}" class="text-decoration-none">
+                            {{ job.company.name }}
+                        </a>
+                    </h4>
+                    <p class="card-text">
+                        <span class="badge bg-secondary">{{ job.category }}</span>
+                    </p>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <p class="card-text">
+                            <strong><i class="bi bi-geo-alt-fill"></i> Location:</strong> {{ job.location }}
+                        </p>
+                        <p class="card-text">
+                            <strong><i class="bi bi-currency-dollar"></i> Salary:</strong> {{ job.salary_range }}
+                        </p>
+                    </div>
+
+                    <h5 class="mt-4">Job Description</h5>
+                    <div class="card-text border p-3 rounded">
+                        {{ job.description|safe }}
+                    </div>
+
+                    <h5 class="mt-4">Requirements</h5>
+                    <div class="card-text border p-3 rounded">
+                        {{ job.requirements|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title">Apply for this Job</h5>
+                    <p class="text-muted">Posted on {{ job.posted_date|date:"F j, Y" }}</p>
+
+                    {% if user.is_authenticated %}
+                        {% if user_has_applied %}
+                            <button class="btn btn-success w-100 disabled" disabled>
+                                <i class="bi bi-check-circle-fill"></i> Already Applied
+                            </button>
+                        {% else %}
+                            <form method="post" action="{% url 'apply-for-job' job.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-box-arrow-in-right"></i> Apply Now
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-center">
+                            <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-secondary w-100">
+                                Log in to Apply
+                            </a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}

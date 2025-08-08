@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title text-center">Create an Account</h1>
+          <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% for field in form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                  {{ field.label }}
+                </label>
+                {% if field.field.widget.input_type == 'checkbox' %}
+                  {% render_field field class="form-check-input" %}
+                {% else %}
+                  {% render_field field class="form-control" %}
+                {% endif %}
+                {% if field.help_text %}
+                  <div class="form-text">{{ field.help_text|safe }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                  <div class="alert alert-danger mt-1">{{ error }}</div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+          </form>
+          <p class="text-center mt-3">
+            Already have an account? <a href="{% url 'login' %}">Login here</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
