@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Job - HireHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body {font-family: 'Inter', sans-serif;}</style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <main class="container mx-auto max-w-4xl p-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-500">
+        <h1 class="text-3xl font-bold text-gray-800">Create New Job Posting</h1>
+        <form method="post" action="{% url 'create_job_listing' %}" class="mt-6 space-y-6">
+            {% csrf_token %}
+            <div>
+                <label for="title" class="block text-gray-700 font-medium">Job Title</label>
+                <input type="text" id="title" name="title" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div>
+                <label for="description" class="block text-gray-700 font-medium">Job Description</label>
+                <textarea id="description" name="description" rows="6" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required></textarea>
+            </div>
+            <div>
+                <label for="requirements" class="block text-gray-700 font-medium">Requirements</label>
+                <textarea id="requirements" name="requirements" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required></textarea>
+            </div>
+            <div>
+                <label for="location" class="block text-gray-700 font-medium">Location</label>
+                <input type="text" id="location" name="location" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                    Post Job
+                </button>
+                <a href="/dashboard" class="bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg shadow-md hover:bg-gray-400 transition-colors">Cancel</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile - HireHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body {font-family: 'Inter', sans-serif;}</style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+    <main class="container mx-auto max-w-4xl p-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-500">
+        <div class="flex justify-between items-start mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">{{ company.name }}</h1>
+                <p class="text-gray-600 mt-2">{{ company.website }}</p>
+            </div>
+            <div>
+                <a href="{% url 'company_profile_edit' %}" class="bg-purple-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-purple-600 transition-colors">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold text-gray-800">About Us</h2>
+            <p class="mt-2 text-gray-700">{{ company.description }}</p>
+        </div>
+
+        <div class="mt-10 border-t border-gray-200 pt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Open Positions</h2>
+            <div class="space-y-4">
+                {% if company_job_postings %}
+                    {% for posting in company_job_postings %}
+                    <div class="bg-white p-4 rounded-lg shadow-sm flex justify-between items-center transition-transform transform hover:scale-105">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800">{{ posting.title }}</h3>
+                            <p class="text-gray-600 text-sm">{{ posting.location }} - Posted {{ posting.posted_date|date:"F d, Y" }}</p>
+                        </div>
+                        <a href="{% url 'job_apply_page' pk=posting.pk %}" class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 transition-colors">
+                            Apply Now
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-500">There are no open positions at this time.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

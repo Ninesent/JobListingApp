@@ -1,23 +1,37 @@
-{% extends 'base.html' %}
-
-{% block title %}Login{% endblock %}
-
-{% block content %}
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h1 class="card-title text-center">Login</h1>
-          <form method="post">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HireHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body {font-family: 'Inter', sans-serif;}</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border-t-4 border-blue-500">
+        <h1 class="text-3xl font-bold text-center text-gray-800">Login</h1>
+        <form method="post" action="{% url 'login' %}" class="mt-6 space-y-6">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-          </form>
-          <p class="text-center mt-3">
-            Don't have an account? <a href="{% url 'register' %}">Register here</a>.
-          </p>
-        </div>
-      </div>
+            <div>
+                <label for="username" class="block text-gray-700 font-medium">Username</label>
+                <input type="text" id="username" name="username" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div>
+                <label for="password" class="block text-gray-700 font-medium">Password</label>
+                <input type="password" id="password" name="password" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" required>
+            </div>
+            <div class="flex items-center justify-between">
+                <a href="#" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors">
+                    Login
+                </button>
+            </div>
+            <p class="text-center text-gray-500 text-sm">
+                Don't have an account? <a href="/register" class="text-blue-600 hover:underline">Register here</a>
+            </p>
+        </form>
     </div>
-  </div>
-{% endblock %}
+</body>
+</html>

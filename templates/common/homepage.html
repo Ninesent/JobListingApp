@@ -1,21 +1,41 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Job Board</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>body {font-family: 'Inter', sans-serif;}</style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-blue-600">HireHub</a>
+            <div class="space-x-4">
+                <a href="/login" class="text-gray-600 hover:text-blue-600">Login</a>
+                <a href="/register" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors">Register</a>
+            </div>
+        </nav>
+    </header>
 
-{% block title %}Home - Job Portal{% endblock %}
-
-{% block content %}
-  <h1 class="mb-4">Recent Job Postings</h1>
-  <div class="list-group">
-    {% for job in jobs %}
-      <a href="{% url 'job_detail' job.pk %}" class="list-group-item list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-          <h5 class="mb-1">{{ job.title }}</h5>
-          <small>{{ job.posted_date|date:"F j, Y" }}</small>
+    <main class="flex-grow flex items-center justify-center text-center px-4">
+        <div class="max-w-4xl p-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-500">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
+                Post Jobs, Find Talent. Simplified.
+            </h1>
+            <p class="mt-6 text-xl text-gray-600">
+                A platform designed exclusively for companies to manage their hiring process efficiently.
+            </p>
+            <div class="mt-8">
+                <a href="/register" class="bg-blue-600 text-white font-bold py-3 px-8 text-lg rounded-lg shadow-lg hover:bg-blue-700 transition-colors transform hover:scale-105">
+                    Start Hiring Now
+                </a>
+            </div>
         </div>
-        <p class="mb-1">{{ job.company.name }}</p>
-        <small>{{ job.location }}</small>
-      </a>
-    {% empty %}
-      <p>No job postings found.</p>
-    {% endfor %}
-  </div>
-{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-4">
+        <p>&copy; 2024 HireHub. All rights reserved.</p>
+    </footer>
+</body>
+</html>
