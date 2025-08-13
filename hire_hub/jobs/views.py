@@ -3,7 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
 from hire_hub.accounts.models import CompanyProfile
@@ -113,6 +113,7 @@ class JobDeleteView(UserPassesTestMixin, DeleteView):
 
 
 @login_required
+@permission_required('jobs.add_interview', raise_exception=True)
 def schedule_interview(request, application_pk):
     application = get_object_or_404(Application, pk=application_pk)
 
@@ -133,6 +134,7 @@ def schedule_interview(request, application_pk):
 
 
 @login_required
+@permission_required('jobs.view_application', raise_exception=True)
 def application_detail(request, pk):
     application = get_object_or_404(Application, pk=pk)
     context = {
