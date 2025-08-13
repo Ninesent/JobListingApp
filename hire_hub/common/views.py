@@ -1,7 +1,8 @@
-# from django.shortcuts import render
-#
-# def home(request):
-#     return render(request, 'common/homepage.html')
-#
-# def about(request):
-#     return render(request, 'common/about.html')
+from django.views.generic import TemplateView
+
+
+class HomePageView(TemplateView):
+    template_name = 'common/homepage.html'
+
+class AboutPageView(TemplateView):
+    template_name = 'common/about.html'

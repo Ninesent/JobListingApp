@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Job Posting{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10 text-center">
+    <h1 class="text-3xl font-bold mb-4 text-red-600">Confirm Deletion</h1>
+    <p class="text-lg text-gray-700 mb-6">Are you sure you want to delete the job posting for: **{{ object.title }}**?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-center space-x-4">
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200">
+                Yes, Delete
+            </button>
+            <a href="{% url 'jobs:job_detail' object.pk %}" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-6 rounded-md transition-colors duration-200">
+                No, Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

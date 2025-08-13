@@ -1,13 +1,9 @@
-from django.urls import path, include
+from django.urls import path
 from hire_hub.accounts import views
 
 urlpatterns = [
-    path('login/', views.login, name='login'),
+    path('profile/edit/', views.company_profile_edit, name='company_profile_edit'),
     path('register/', views.register, name='register'),
-    path('profile/<int:pk>/', include([
-        path('', views.profile_details, name='profile-details'),
-        path('edit/', views.profile_edit, name='profile-edit'),
-        path('delete/', views.profile_delete, name='profile-delete'),
-    ]))
-
+    path('logout/', views.logout_user, name='logout'),
+    path('login/', views.CustomLoginView.as_view(), name='login'),
 ]

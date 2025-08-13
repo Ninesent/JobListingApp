@@ -1,12 +1,16 @@
-from django.urls import path, include
+from django.urls import path
 from hire_hub.jobs import views
 
 urlpatterns = [
-    path('', views.job_list_view, name='job-list'),
-    path('create/', views.create_job_listing, name='create-job'),
-    path('/<int:pk>/', include([
-        path('update/', views.update_job_listing, name='update-job'),
-        path('delete/', views.delete_job_listing, name='delete-job'),
-        path('apply/', views.apply_for_job, name='apply-for-job'),
-    ]) )
+
+    path('', views.JobListView.as_view(), name='job_list'),
+    path('jobs/<int:pk>/', views.JobDetailView.as_view(), name='job_detail'),
+    path('jobs/<int:pk>/apply/', views.apply_for_job, name='apply_for_job'),
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
+    path('job/create/', views.JobCreateView.as_view(), name='create_job'),
+    path('job/<int:pk>/edit/', views.JobUpdateView.as_view(), name='edit_job'),
+    path('job/<int:pk>/delete/', views.JobDeleteView.as_view(), name='delete_job'),
+    path('applications/<int:pk>/', views.ApplicationDetailView.as_view(), name='application_details'),
+    path('applications/<int:pk>/schedule_interview/', views.schedule_interview, name='schedule_interview'),
 ]
+

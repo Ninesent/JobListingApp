@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Listings - HireHub{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 md:p-8">
+    <h1 class="text-4xl font-bold text-gray-800 text-center mb-12">Current Job Openings</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% if job_postings %}
+            {% for posting in job_postings %}
+            <div class="bg-white rounded-xl shadow-lg border-t-4 border-indigo-500 p-6 transition-transform transform hover:scale-105">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">{{ posting.title }}</h2>
+                <p class="text-gray-600">
+                    <span class="font-medium">{{ posting.company.company_name }}</span> - {{ posting.location }}
+                </p>
+                <div class="mt-4 flex items-center space-x-2 text-gray-500 text-sm">
+                    <span>{{ posting.get_job_type_display }}</span>
+                    <span>•</span>
+                    <span>{{ posting.posted_date|date:"F j, Y" }}</span>
+                </div>
+                <div class="mt-6 text-right">
+                    <a href="{% url 'job_detail' pk=posting.pk %}" class="inline-block px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow-md hover:bg-indigo-700 transition duration-300">
+                        View Details
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-span-full text-center p-12 bg-white rounded-xl shadow-lg text-gray-500">
+                <p class="text-2xl font-semibold mb-2">No job postings available at the moment.</p>
+                <p>Please check back later!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

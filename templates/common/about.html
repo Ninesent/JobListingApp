@@ -1,30 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - HireHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body {font-family: 'Inter', sans-serif;}</style>
-</head>
-<body class="bg-gray-100 min-h-screen p-4">
-    <header class="bg-white shadow-md">
-        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold text-blue-600">HireHub</a>
-            <div class="space-x-4">
-                <a href="/login" class="text-gray-600 hover:text-blue-600">Login</a>
-                <a href="/register" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition-colors">Register</a>
-            </div>
-        </nav>
-    </header>
-    <main class="container mx-auto max-w-4xl p-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-500 mt-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">About HireHub</h1>
-        <p class="text-lg text-gray-700 mb-6">
-            HireHub is a platform built exclusively for companies to streamline their hiring process. Our mission is to connect great employers with great talent, without the noise of traditional job boards.
-        </p>
-        <p class="text-gray-700">
-            We provide a simple, elegant solution for companies to post job openings, manage applications, and find the right candidates. Our platform is designed with a focus on ease of use, ensuring you can focus on what matters most: growing your team.
-        </p>
-    </main>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-lg shadow-xl p-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-6">About HireHub</h1>
+    <p class="text-lg text-gray-700 leading-relaxed mb-4">
+        Our mission is to connect talented individuals with great companies. We believe in providing a seamless and efficient platform where employers can easily find the right candidates and job seekers can discover opportunities that match their skills and ambitions.
+    </p>
+</div>
+{% endblock %}
