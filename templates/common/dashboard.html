@@ -1,66 +1,92 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer Dashboard</title>
+    <title>Dashboard</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>body {font-family: 'Inter', sans-serif;}</style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <header class="bg-white shadow-md">
-        <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="/dashboard" class="text-2xl font-bold text-blue-600">HireHub</a>
-            <div class="space-x-4">
-                <a href="{% url 'logout' %}" class="text-gray-600 hover:text-blue-600">Logout</a>
-            </div>
-        </nav>
-    </header>
-    <main class="container mx-auto p-4 md:p-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Hello, {{ user.first_name }}</h1>
-        <p class="text-gray-600 mt-2">
-            Welcome to your company dashboard for {{ user.companyprofile.company.name }}.
-        </p>
-        <div class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Your Job Postings</h2>
-                <div class="space-y-4">
-                    {% if company_job_postings %}
-                        {% for posting in company_job_postings %}
-                        <div class="bg-white p-4 rounded-xl shadow-md transition-transform transform hover:scale-105">
-                            <h3 class="text-lg font-semibold text-gray-800">{{ posting.title }}</h3>
-                            <p class="text-gray-600 mt-2">Applications: {{ posting.applications_count }}</p>
-                            <div class="mt-4 text-right">
-                                <a href="{% url 'job_details' pk=posting.pk %}" class="text-blue-500 hover:text-blue-700 font-medium transition-colors">
-                                    View Applications
-                                </a>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        <p class="text-gray-500">You have no active job postings.</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Recruitment Tools</h2>
-                <p class="text-gray-700">
-                    Post new job openings to find the best talent.
-                </p>
-                <a href="{% url 'create_job' %}" class="mt-4 w-full block text-center bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow-sm hover:bg-green-600 transition-colors">
-                    Post a New Job
-                </a>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-500">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">Company Profile</h2>
-                <p class="text-gray-700">
-                    Manage your company's public profile and brand.
-                </p>
-                <a href="{% url 'company_profile_edit' %}" class="mt-4 w-full block text-center bg-purple-500 text-white font-bold py-2 px-4 rounded-lg shadow-sm hover:bg-purple-600 transition-colors">
-                    Edit Company Details
-                </a>
-            </div>
+<body class="bg-gray-100 antialiased text-gray-800">
+
+
+<header class="bg-white shadow-sm p-4">
+    <div class="container mx-auto flex justify-between items-center">
+
+        <a href="{% url 'home' %}"
+           class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors duration-200">
+            Home
+        </a>
+        <div class="flex space-x-4">
+
+            <a href="#"
+               class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors duration-200">
+                Create Job Post
+            </a>
+            <a href="{% url 'profile' %}"
+               class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-blue-700 transition-colors duration-200">
+                Company Profile
+            </a>
+            <a href="{% url 'logout' %}"
+               class="bg-red-600 text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-red-700 transition-colors duration-200">
+                Logout
+            </a>
         </div>
-    </main>
+    </div>
+</header>
+
+
+<main class="container mx-auto mt-8 p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+
+    <div class="md:col-span-2">
+        <h2 class="text-xl font-semibold mb-4">Welcome to your dashboard.</h2>
+        <p class="text-gray-600">This is where you'll find an overview of your job listings and applicants.</p>
+    </div>
+
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-bold mb-4">Current Job Postings</h3>
+
+        <ul class="list-none space-y-2">
+
+            {% for posting in job_postings %}
+            <li class="p-2 bg-gray-50 rounded">
+                {{ posting }}
+            </li>
+            {% empty %}
+
+            <li class="p-2 text-gray-500">No job postings found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-bold mb-4">Recent Applicants</h3>
+
+        <ul class="list-none space-y-2">
+
+            {% for applicant in recent_applicants %}
+            <li class="p-2 bg-gray-50 rounded">
+
+                {{ applicant }}
+            </li>
+            {% empty %}
+
+            <li class="p-2 text-gray-500">No recent applicants.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</main>
 </body>
 </html>

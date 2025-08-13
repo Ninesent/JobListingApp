@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Company Profile</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+<div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full">
+    <div class="flex items-center justify-between mb-6">
+
+        <a href="{% url 'profile' %}"
+           class="text-blue-600 hover:text-blue-800 transition-colors duration-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Back to Company Profile
+        </a>
+    </div>
+
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Edit Company Profile</h1>
+    <p class="text-center text-gray-600 mb-8">Update your company's information below.</p>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <div>
+            <label for="{{ form.company_name.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ form.company_name.label }}
+            </label>
+            {{ form.company_name }}
+            {% if form.company_name.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.company_name.errors|striptags }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ form.description.label }}
+            </label>
+            {{ form.description }}
+            {% if form.description.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.description.errors|striptags }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.website.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ form.website.label }}
+            </label>
+            {{ form.website }}
+            {% if form.website.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.website.errors|striptags }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ form.email.label }}
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.email.errors|striptags }}</p>
+            {% endif %}
+        </div>
+
+        <div>
+            <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                {{ form.phone_number.label }}
+            </label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+            <p class="mt-2 text-sm text-red-600">{{ form.phone_number.errors|striptags }}</p>
+            {% endif %}
+        </div>
+
+        <div class="pt-4">
+            <button type="submit"
+                    class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from hire_hub.accounts.models import CompanyProfile
 
 
 JOB_TYPE_CHOICES = (
@@ -10,13 +11,7 @@ JOB_TYPE_CHOICES = (
 )
 
 
-class Company(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    description = models.TextField()
-    website = models.URLField(max_length=200, blank=True, null=True)
 
-    def __str__(self):
-        return self.name
 
 
 class JobCategory(models.Model):
@@ -28,7 +23,7 @@ class JobCategory(models.Model):
 
 class JobPosting(models.Model):
     title = models.CharField(max_length=200)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='job_postings')
+    company = models.ForeignKey(CompanyProfile, on_delete=models.CASCADE, related_name='job_postings')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='job_postings')
     category = models.ForeignKey(JobCategory, on_delete=models.SET_NULL, null=True, related_name='job_postings')
     description = models.TextField()

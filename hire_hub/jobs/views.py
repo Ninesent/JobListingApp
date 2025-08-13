@@ -17,7 +17,6 @@ class JobListView(ListView):
 
 
 class JobDetailView(DetailView):
-
     model = JobPosting
     template_name = 'jobs/job_details.html'
     context_object_name = 'job_posting'
@@ -38,23 +37,6 @@ def apply_for_job(request, pk):
     return render(request, 'apply_for_job.html', {'form': form, 'job_posting': job_posting})
 
 
-
-
-class DashboardView(LoginRequiredMixin, ListView):
-    model = JobPosting
-    template_name = 'jobs/dashboard.html'
-    context_object_name = 'company_job_postings'
-
-    def get_queryset(self):
-        try:
-            company = self.request.user.companyprofile.company
-            return JobPosting.objects.filter(company=company).order_by('-posted_date')
-        except AttributeError:
-            return JobPosting.objects.none()
-
-
-
-
 class JobCreateView(LoginRequiredMixin, CreateView):
     model = JobPosting
     template_name = 'create_job.html'
@@ -70,7 +52,6 @@ class JobCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-
 class JobUpdateView(LoginRequiredMixin, UpdateView):
     model = JobPosting
     template_name = 'jobs/edit_job.html'
@@ -79,7 +60,6 @@ class JobUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self):
         return self.model.objects.filter(author=self.request.user)
-
 
 
 class ApplicationDetailView(LoginRequiredMixin, DetailView):
@@ -103,6 +83,7 @@ class ApplicationDetailView(LoginRequiredMixin, DetailView):
             self.object.status = new_status
             self.object.save()
         return redirect('application_details', pk=self.object.pk)
+
 
 class JobDeleteView(LoginRequiredMixin, DeleteView):
     model = JobPosting
