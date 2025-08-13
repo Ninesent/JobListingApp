@@ -12,7 +12,7 @@ class CompanyProfile(models.Model):
     company_name = models.CharField(max_length=255, blank=True)
     website = models.URLField(max_length=200, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    email = models.EmailField(blank=True, null=True, unique=True)
+    email = models.EmailField(unique=True, null=False, blank=False)
     phone_number = models.CharField(max_length=20, blank=True, null=True, unique=True)
 
     def __str__(self):

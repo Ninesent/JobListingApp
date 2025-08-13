@@ -2,16 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from hire_hub.accounts.models import CompanyProfile
 
-
 JOB_TYPE_CHOICES = (
     ('Full-time', 'Full-time'),
     ('Part-time', 'Part-time'),
     ('Contract', 'Contract'),
     ('Internship', 'Internship'),
 )
-
-
-
 
 
 class JobCategory(models.Model):
@@ -31,7 +27,6 @@ class JobPosting(models.Model):
     location = models.CharField(max_length=100)
     posted_date = models.DateTimeField(auto_now_add=True)
 
-
     job_type = models.CharField(max_length=50, choices=JOB_TYPE_CHOICES, default='Full-time')
     salary = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
@@ -43,6 +38,7 @@ class Application(models.Model):
     job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE, related_name='applications')
     applicant_name = models.CharField(max_length=200)
     applicant_email = models.EmailField()
+    applicant_phone = models.CharField(max_length=20)
     resume = models.FileField(upload_to='resumes/')
     cover_letter = models.TextField(blank=True, null=True)
     submitted_date = models.DateTimeField(auto_now_add=True)

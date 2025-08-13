@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Status</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if status == 'success' %}
+            <h1>🎉 Thank You!</h1>
+            <p>Your application has been successfully submitted.</p>
+            <p>We appreciate your interest and will be in touch soon.</p>
+        {% elif status == 'duplicate' %}
+            <h1>👋 Hello Again!</h1>
+            <p>It looks like you have already applied for this job.</p>
+            <p>We have your application on file and will contact you if you are a good fit!</p>
+        {% endif %}
+        <a href="/">Return to home</a>
+    </div>
+</body>
+</html>

@@ -3,79 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Details - HireHub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body {font-family: 'Inter', sans-serif;}</style>
-</head>
-<body class="bg-gray-100 min-h-screen p-4">
-    <main class="container mx-auto max-w-4xl p-8 bg-white rounded-xl shadow-lg border-t-4 border-blue-500">
+    <title>{{ object.title }}</title>
 
-        <!-- Header section with job title and action buttons -->
-        <div class="flex justify-between items-start mb-6 flex-wrap gap-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">{{ job_posting.title }}</h1>
-                <p class="text-gray-600 mt-2">{{ job_posting.company.name }} - {{ job_posting.location }}</p>
-                <div class="mt-4 flex items-center space-x-4">
-                    <span class="bg-indigo-100 text-indigo-800 text-sm font-medium px-3 py-1 rounded-full">
-                        Salary: {{ job_posting.salary }}
-                    </span>
-                    <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
-                        Type: {{ job_posting.get_job_type_display }}
-                    </span>
-                </div>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Import the Inter font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+
+        /* Custom styles for the content sections */
+        .job-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-white shadow-lg p-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-indigo-600 hover:text-indigo-800 transition duration-300">
+                Home
+            </a>
+            <div class="space-x-4">
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="text-gray-700 font-semibold hover:text-indigo-600 transition duration-300">
+                    Dashboard
+                </a>
+                <a href="{% url 'logout' %}" class="text-red-600 font-semibold hover:text-red-800 transition duration-300">
+                    Logout
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300">
+                    Login
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-2xl">
+
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ object.title }}</h1>
+            <div class="mb-6">
+                <p class="text-xl text-gray-600 font-semibold">{{ object.company.company_name }}</p>
+                <p class="text-gray-600 mt-1"><span class="font-semibold">Category:</span> {{ object.category }}</p>
+                <p class="text-gray-600 mt-1"><span class="font-semibold">Job Type:</span> {{ object.job_type }}</p>
             </div>
 
-            <!-- Conditional buttons for the job author or applicants -->
-            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-                <!-- Buttons for the job author -->
-                {% if request.user == job_posting.author %}
-                    <a href="{% url 'edit_job_listing' pk=job_posting.pk %}" class="w-full sm:w-auto text-center bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-yellow-600 transition-colors">Edit</a>
-                    <a href="{% url 'delete_job_listing' pk=job_posting.pk %}" class="w-full sm:w-auto text-center bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition-colors">Delete</a>
+            <div class="job-section border-t border-gray-200 pt-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-2">Job Description</h2>
+                <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">{{ object.description }}</p>
+            </div>
+
+            <div class="job-section mt-6 border-t border-gray-200 pt-6">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-2">Requirements</h2>
+                <p class="text-gray-600 leading-relaxed whitespace-pre-wrap">{{ object.requirements }}</p>
+            </div>
+
+            <div class="mt-6 border-t border-gray-200 pt-6">
+                <p class="text-gray-600">
+                    <span class="font-semibold">Location:</span> {{ object.location }}
+                </p>
+                <p class="text-gray-600 mt-2">
+                    <span class="font-semibold">Salary:</span> ${{ object.salary }}
+                </p>
+                <p class="text-gray-500 mt-2 text-sm">
+                    <span class="font-semibold">Posted on:</span> {{ object.posted_date|date:"F j, Y" }}
+                </p>
+            </div>
+
+            <div class="mt-8">
+                {% if request.user == object.company.user %}
+                <div class="flex space-x-4">
+                    <a href="{% url 'edit_job' object.pk %}"
+                       class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out">
+                        Edit Job
+                    </a>
+                    <a href="{% url 'delete_job' object.pk %}"
+                       class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out">
+                        Delete Job
+                    </a>
+                </div>
                 {% else %}
-                    <!-- The new "Apply" button for applicants -->
-                    <a href="{% url 'apply_for_job' pk=job_posting.pk %}" class="w-full sm:w-auto text-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-300">
+                <div class="flex space-x-4">
+                    <a href="{% url 'apply_for_job' object.pk %}"
+                       class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out">
                         Apply Now
                     </a>
+                    <a href="{% url 'job_list' %}"
+                       class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-lg shadow transition-colors duration-200 ease-in-out">
+                        Back to Job Listings
+                    </a>
+                </div>
                 {% endif %}
             </div>
         </div>
-
-        <!-- Job description and requirements -->
-        <div class="mt-8 space-y-6">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Description</h2>
-                <p class="mt-2 text-gray-700 leading-relaxed">{{ job_posting.description|linebreaks }}</p>
-            </div>
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">Requirements</h2>
-                <p class="mt-2 text-gray-700 leading-relaxed">{{ job_posting.requirements|linebreaks }}</p>
-            </div>
-        </div>
-
-        <!-- Applications section -->
-        <div class="mt-10 border-t border-gray-200 pt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Applications ({{ applications|length }})</h2>
-            <div class="space-y-4">
-                {% if applications %}
-                    {% for application in applications %}
-                    <div class="bg-gray-50 p-4 rounded-lg shadow-sm flex justify-between items-center transition-transform transform hover:scale-105">
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-800">{{ application.applicant_name }}</h3>
-                            <p class="text-gray-600 text-sm">{{ application.applicant_email }}</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">{{ application.status }}</span>
-                            <a href="{% url 'application_details' pk=application.pk %}" class="mt-1 block text-blue-500 hover:text-blue-700 text-sm">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-gray-500">No applications have been submitted for this job yet.</p>
-                {% endif %}
-            </div>
-        </div>
-    </main>
+    </div>
 </body>
 </html>

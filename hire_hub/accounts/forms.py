@@ -8,9 +8,9 @@ import re
 class CompanyRegistrationForm(UserCreationForm):
     company_name = forms.CharField(max_length=255, required=True, label="Company Name")
     company_description = forms.CharField(widget=forms.Textarea, required=True, label="Company Description")
-    website = forms.URLField(required=False, label="Company Website (Optional)")
-    email = forms.EmailField(required=False, label="Contact Email (Optional)")
+    email = forms.EmailField(required=True, label="Contact Email")
     phone_number = forms.CharField(max_length=20, required=False, label="Contact Phone Number (Optional)")
+    website = forms.URLField(required=False, label="Company Website (Optional)")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,7 +64,7 @@ class CompanyRegistrationForm(UserCreationForm):
 
 
 class CompanyProfileEditForm(forms.ModelForm):
-    email = forms.EmailField(required=False, label="Contact Email (Optional)")
+    email = forms.EmailField(required=True, label="Contact Email")
     phone_number = forms.CharField(max_length=20, required=False, label="Contact Phone Number (Optional)")
 
     class Meta:
@@ -73,8 +73,8 @@ class CompanyProfileEditForm(forms.ModelForm):
         labels = {
             'company_name': 'Company Name',
             'description': 'Company Description',
+            'email': 'Contact Email',
             'website': 'Company Website (Optional)',
-            'email': 'Contact Email (Optional)',
             'phone_number': 'Contact Phone Number (Optional)',
         }
 

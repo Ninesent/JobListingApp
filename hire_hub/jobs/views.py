@@ -1,25 +1,26 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.http import HttpResponseForbidden
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 
+from hire_hub.accounts.models import CompanyProfile
 from hire_hub.jobs.models import JobPosting, Application, Interview
-from hire_hub.jobs.forms import JobPostingForm, ApplicationForm, InterviewForm
+from hire_hub.jobs.forms import JobPostingForm, ApplicationForm, InterviewForm, JobEditForm
 
 
-class JobListView(ListView):
+class JobPostListView(ListView):
     model = JobPosting
     template_name = 'jobs/job_list.html'
-    context_object_name = 'job_postings'
     ordering = ['-posted_date']
+    context_object_name = 'jobs'
 
 
-class JobDetailView(DetailView):
+class JobPostDetailsView(DetailView):
     model = JobPosting
     template_name = 'jobs/job_details.html'
-    context_object_name = 'job_posting'
 
 
 def apply_for_job(request, pk):
@@ -37,63 +38,84 @@ def apply_for_job(request, pk):
     return render(request, 'apply_for_job.html', {'form': form, 'job_posting': job_posting})
 
 
-class JobCreateView(LoginRequiredMixin, CreateView):
+class JobPostingView(LoginRequiredMixin, CreateView):
     model = JobPosting
-    template_name = 'create_job.html'
     form_class = JobPostingForm
+    template_name = 'jobs/post_job.html'
     success_url = reverse_lazy('dashboard')
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+
         try:
-            form.instance.company = self.request.user.companyprofile.company
-        except AttributeError:
-            return HttpResponseForbidden("You must have a company profile to post jobs.")
-        return super().form_valid(form)
+            company = self.request.user.companyprofile
+
+            job_posting = form.save(commit=False)
+            job_posting.author = self.request.user
+            job_posting.company = company
+            job_posting.save()
+
+            return super().form_valid(form)
+
+        except ObjectDoesNotExist:
+            return redirect('register')
 
 
-class JobUpdateView(LoginRequiredMixin, UpdateView):
+class JobEditView(UserPassesTestMixin, UpdateView):
     model = JobPosting
+    form_class = JobEditForm
     template_name = 'jobs/edit_job.html'
-    form_class = JobPostingForm
-    success_url = reverse_lazy('dashboard')
 
-    def get_queryset(self):
-        return self.model.objects.filter(author=self.request.user)
+    def get_success_url(self):
+        return reverse_lazy('job_detail', kwargs={'pk': self.object.pk})
+
+    def test_func(self):
+        job = self.get_object()
+        return self.request.user == job.author
 
 
-class ApplicationDetailView(LoginRequiredMixin, DetailView):
+class JobApplicationView(CreateView):
     model = Application
-    template_name = 'jobs/application_details.html'
-    context_object_name = 'application'
+    form_class = ApplicationForm
+    template_name = 'jobs/apply_for_job.html'
 
-    def get_queryset(self):
-        return Application.objects.filter(job_posting__author=self.request.user)
+    def form_valid(self, form):
+        job_posting = get_object_or_404(JobPosting, pk=self.kwargs['pk'])
+        applicant_email_normalized = form.instance.applicant_email.lower()
+        existing_application = Application.objects.filter(
+            job_posting=job_posting,
+            applicant_email=applicant_email_normalized
+        ).exists()
+
+        if existing_application:
+            return redirect(reverse('jobs/application_confirmation', kwargs={'status': 'duplicate'}))
+        else:
+            application = form.save(commit=False)
+            application.job_posting = job_posting
+            application.applicant_email = applicant_email_normalized
+            application.save()
+            return redirect(reverse('jobs/application_confirmation', kwargs={'status': 'success'}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['interview_form'] = InterviewForm()
-        context['status_choices'] = Application.STATUS_CHOICES
+        context['job_posting'] = get_object_or_404(JobPosting, pk=self.kwargs['pk'])
         return context
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        new_status = request.POST.get('status')
-        if new_status and new_status in [choice[0] for choice in Application.STATUS_CHOICES]:
-            self.object.status = new_status
-            self.object.save()
-        return redirect('application_details', pk=self.object.pk)
 
-
-class JobDeleteView(LoginRequiredMixin, DeleteView):
+class JobDeleteView(UserPassesTestMixin, DeleteView):
     model = JobPosting
-    template_name = 'jobs/job_confirm_delete.html'
-    success_url = reverse_lazy('jobs:dashboard')
+    template_name = 'jobs/job_delete.html'
+
+    success_url = reverse_lazy('job_list')
+
+    def test_func(self):
+        job = self.get_object()
+        return self.request.user == job.author
 
 
 @login_required
-def schedule_interview(request, pk):
-    application = get_object_or_404(Application, pk=pk)
+def schedule_interview(request, application_pk):
+    application = get_object_or_404(Application, pk=application_pk)
+
     if request.method == 'POST':
         form = InterviewForm(request.POST)
         if form.is_valid():
@@ -101,5 +123,47 @@ def schedule_interview(request, pk):
             interview.application = application
             interview.interviewer = request.user
             interview.save()
-            return redirect('application_details', pk=application.pk)
-    return redirect('application_details', pk=application.pk)
+
+
+            return redirect(reverse('application_detail', kwargs={'pk': application.pk}))
+    else:
+        form = InterviewForm()
+
+    return render(request, 'jobs/schedule_interview.html', {'form': form, 'application': application})
+
+
+@login_required
+def application_detail(request, pk):
+    application = get_object_or_404(Application, pk=pk)
+    context = {
+        'application': application,
+    }
+    return render(request, 'jobs/application_detail.html', context)
+
+
+
+
+class ApplicationConfirmationView(TemplateView):
+    template_name = 'jobs/application_confirmation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        status = self.kwargs.get('status', 'unknown')
+        context['status'] = status
+
+        return context
+
+
+class ApplicantDetailView(LoginRequiredMixin, DetailView):
+    model = Application
+    template_name = 'jobs/applicant_detail.html'
+    context_object_name = 'applicant'
+
+    def get_object(self, queryset=None):
+        applicant = super().get_object(queryset)
+
+        if applicant.job_posting.company.user != self.request.user:
+            raise Http404
+
+        return applicant

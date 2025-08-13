@@ -12,7 +12,7 @@ class AboutPageView(TemplateView):
 
 
 def dashboard(request):
-    job_postings = JobPosting.objects.all().order_by('title')
+    job_postings = JobPosting.objects.all().order_by('-posted_date')
 
     recent_applicants = Application.objects.all().order_by('-submitted_date')[:5]
 
