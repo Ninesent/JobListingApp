@@ -87,13 +87,13 @@ class JobApplicationView(CreateView):
         ).exists()
 
         if existing_application:
-            return redirect(reverse('jobs/application_confirmation', kwargs={'status': 'duplicate'}))
+            return redirect(reverse('application_confirmation', kwargs={'status': 'duplicate'}))
         else:
             application = form.save(commit=False)
             application.job_posting = job_posting
             application.applicant_email = applicant_email_normalized
             application.save()
-            return redirect(reverse('jobs/application_confirmation', kwargs={'status': 'success'}))
+            return redirect(reverse('application_confirmation', kwargs={'status': 'success'}))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -113,7 +113,6 @@ class JobDeleteView(UserPassesTestMixin, DeleteView):
 
 
 @login_required
-@permission_required('jobs.add_interview', raise_exception=True)
 def schedule_interview(request, application_pk):
     application = get_object_or_404(Application, pk=application_pk)
 
@@ -134,7 +133,6 @@ def schedule_interview(request, application_pk):
 
 
 @login_required
-@permission_required('jobs.view_application', raise_exception=True)
 def application_detail(request, pk):
     application = get_object_or_404(Application, pk=pk)
     context = {
