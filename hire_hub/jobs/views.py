@@ -135,8 +135,11 @@ def schedule_interview(request, application_pk):
 @login_required
 def application_detail(request, pk):
     application = get_object_or_404(Application, pk=pk)
+    interview = Interview.objects.filter(application=application).order_by('-scheduled_date').first()
+
     context = {
         'application': application,
+        'interview': interview,
     }
     return render(request, 'jobs/application_detail.html', context)
 
